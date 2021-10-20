@@ -10,6 +10,8 @@ get the file installation key from
 
 https://www.mathworks.com/licensecenter/licenses/40838630/6397849/activations
 
+the fileInstallationKey is also under vault.slac.stanford.edu under secrets/matlab
+
 (difference license required?)
 
 this assumes the network license - how best to not use that?
@@ -23,6 +25,9 @@ make mount
 
 # build
 MATLAB_INSTALL_KEY=<blah> make build
+
+# unmount the iso
+make unmount
 
 # push to dockerhub
 make push
