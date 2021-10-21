@@ -40,7 +40,7 @@
 ## Set the desired value for destinationFolder and
 ## uncomment the line.
 
-destinationFolder=/usr/local/MATLAB/R2012a
+destinationFolder=/app/MATLAB/R2012a
 
 ##
 ## SPECIFY FILE INSTALLATION KEY
@@ -132,7 +132,7 @@ mode=silent
 ## Set the desired value for licensePath and
 ## uncomment the line.
 
-licensePath=/network.lic
+licensePath=/license.lic
 
 ## CHOOSE TO INSTALL LICENSE MANAGER (For network license types only)
 ##

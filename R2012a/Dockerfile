@@ -14,7 +14,8 @@ COPY iso/ /iso
 ARG MATLAB_INSTALL_KEY
 COPY installer_input.txt /
 RUN sed -i s/fileInstallationKey=.*/fileInstallationKey=$MATLAB_INSTALL_KEY/ /installer_input.txt
-COPY network.lic /
+# empty license
+COPY license.lic /license.lic
 
 # take in the fileInstallationKey from ARG
 RUN cat /installer_input.txt
@@ -24,7 +25,7 @@ RUN cd iso/ \
   && ./install -mode silent -agreeToLicense yes -inputFile /installer_input.txt 
 
 # spit out log
-RUN cat /tmp/matlab-install.log
+# RUN cat /tmp/matlab-install.log
 
 ###
 # final image stage
@@ -39,5 +40,15 @@ RUN  yum clean all && yum makecache \
   && yum install -y re2c glibc.i686 libX11.i686 zlib.i686 ncurses-libs.i686 libXext.i686 libXt.i686 libXmu.i686 \
   && yum clean all -y && rm -rf /var/cache 
 
-COPY --from=install /usr/local/MATLAB/R2012a /usr/local/MATLAB/R2012a
+ARG MATLAB_VERSION=R2012a
+ENV MATLAB_VERSION=$MATLAB_VERSION
+
+ENV MATLAB_PREFIX=/app/MATLAB
+ENV MATLAB_ROOT=$MATLAB_PREFIX/$MATLAB_VERSION
+
+COPY --from=install $MATLAB_ROOT $MATLAB_ROOT
+# copy license
+COPY network.lic $MATLAB_PREFIX/licenses/license.lic
+
+ENV PATH=$MATLAB_ROOT/bin:$PATH
 
