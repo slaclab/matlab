@@ -4,8 +4,8 @@
 # installation stage
 ###
 #FROM registry.access.redhat.com/rhel6/rhel:6.10-548 AS install
-#FROM i386/centos:centos6 AS install
-FROM centos:centos6.10 AS install
+FROM i386/centos:centos6 AS install
+#FROM centos:centos6.10 AS install
 
 # can we make this a cache instad?
 COPY iso/ /iso
@@ -17,12 +17,9 @@ RUN sed -i s/fileInstallationKey=.*/fileInstallationKey=$MATLAB_INSTALL_KEY/ /in
 # empty license
 COPY license.lic /license.lic
 
-# take in the fileInstallationKey from ARG
-RUN cat /installer_input.txt
-
 # install
 RUN cd iso/ \
-  && ./install -mode silent -agreeToLicense yes -inputFile /installer_input.txt 
+  && ./install -glnx86 -mode silent -agreeToLicense yes -inputFile /installer_input.txt 
 
 # spit out log
 # RUN cat /tmp/matlab-install.log
@@ -31,8 +28,8 @@ RUN cd iso/ \
 # final image stage
 ###
 #FROM registry.access.redhat.com/rhel6/rhel:6.10-548
-#FROM i386/centos:centos6
-FROM centos:centos6.10
+FROM i386/centos:centos6
+#FROM centos:centos6.10
 
 COPY CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo
 RUN  yum clean all && yum makecache \
@@ -48,7 +45,9 @@ ENV MATLAB_ROOT=$MATLAB_PREFIX/$MATLAB_VERSION
 
 COPY --from=install $MATLAB_ROOT $MATLAB_ROOT
 # copy license
-COPY network.lic $MATLAB_PREFIX/licenses/license.lic
+COPY network.lic $MATLAB_ROOT/licenses/license.lic
 
+RUN ln -sf /lib /lib64 \
+  && ln -sf $MATLAB_ROOT/sys/java/jre/glnx86 $MATLAB_ROOT/sys/java/jre/glnxa64
 ENV PATH=$MATLAB_ROOT/bin:$PATH
 
