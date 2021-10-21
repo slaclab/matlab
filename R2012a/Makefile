@@ -24,6 +24,6 @@ push:
 
 singularity:
 	mkdir -p $(IMAGE_PATH)/$(TAG)/
-	singularity pull -F $(IMAGE_PATH)/$(TAG)/matlab@$(TAG).sif docker://$(IMAGE):$(TAG)
-
+	singularity pull -F /tmp/matlab@$(TAG).sif docker://$(IMAGE):$(TAG)
+	mv /tmp/matlab@$(TAG).sif $(IMAGE_PATH)/$(TAG)/matlab@$(TAG).sif
 	
